@@ -1,343 +1,148 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>💜 Valentine 💖</title>
-
+    <meta charset="UTF-8">
+    <title>Speed Reading RSVP Tool</title>
     <style>
-        /* --- Custom Font (put love.woff2 / love.woff / love.ttf next to this file) --- */
-        @font-face {
-            font-family: "love";
-            src: url("love.woff2") format("woff2"), url("love.woff") format("woff"), url("love.ttf") format("truetype");
-            font-display: swap;
-        }
-
-        :root {
-            --pink: #ff69b4;
-            --pink-soft: #ff9ad0;
-            --lilac: #b46cff;
-            --bg1: #b46cff;
-            --bg2: #ff8fd4;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-        }
-
         body {
-            margin: 0;
-            background: radial-gradient(1200px 800px at 20% -10%, rgba(255,255,255,.25), transparent 60%), linear-gradient(135deg, var(--bg1), var(--bg2));
+            font-family: Arial, sans-serif;
+            background: #111;
             color: #fff;
-            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Comic Sans MS", sans-serif;
-            display: grid;
-            place-items: center;
-            overflow-x: hidden;
-        }
-
-        .container {
-            text-align: center;
-            max-width: 900px;
-            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
         h1 {
-            font-size: clamp(2rem, 5vw, 3.25rem);
-            margin: 0 0 12px;
-            line-height: 1.1;
-            text-shadow: 0 2px 10px rgba(0,0,0,.15);
+            margin-bottom: 10px;
         }
 
-        .tiny {
-            font-size: clamp(1rem, 3.2vw, 1.25rem);
-            opacity: .95;
+        textarea {
+            width: 90%;
+            max-width: 800px;
+            height: 140px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        input[type="password"] {
-            padding: 12px 18px;
-            border-radius: 28px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            text-align: center;
-            background: rgba(255,255,255,.9);
-            color: #5a2b7a;
-            box-shadow: 0 6px 20px rgba(0,0,0,.15);
-            width: min(320px, 80vw);
+        input[type="number"] {
+            width: 90px;
+            padding: 5px;
+            font-size: 16px;
         }
 
-        .btn {
-            appearance: none;
-            border: none;
-            border-radius: 999px;
-            padding: 12px 28px;
-            margin: 12px 10px 0;
-            font-size: 1.15rem;
-            color: #fff;
+        button {
+            padding: 10px 18px;
+            font-size: 16px;
             cursor: pointer;
-            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
-            box-shadow: 0 10px 22px rgba(0,0,0,.18);
+            border: none;
+            border-radius: 5px;
         }
 
-            .btn:active {
-                transform: translateY(1px) scale(.98);
+            button.start {
+                background: #00c853;
             }
 
-        .btn-primary {
-            background: var(--pink);
-        }
-
-        .btn-secondary {
-            background: #8c57be;
-        }
-
-        /* Grow/shrink transforms applied inline; this smooths everything */
-        #yes, #no {
-            will-change: transform;
-        }
-
-        /* Glow when Yes dominates */
-        .glow {
-            animation: glowPulse 1.2s ease-in-out infinite alternate;
-            box-shadow: 0 0 30px var(--pink);
-        }
-
-        @keyframes glowPulse {
-            from {
-                box-shadow: 0 0 18px var(--pink-soft), 0 0 0 rgba(0,0,0,0);
+            button.pause {
+                background: #ffab00;
             }
 
-            to {
-                box-shadow: 0 0 42px var(--pink), 0 0 18px rgba(255,105,180,.35);
-            }
-        }
-
-        /* Celebration layout */
-        .celebrate {
-            display: grid;
-            place-items: center;
-            gap: 18px;
-        }
-
-        .thanks {
-            font-family: "love", "Poppins", cursive;
-            font-size: clamp(2.2rem, 6vw, 4rem);
-            color: #fff;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 24px rgba(255,105,180,.35), 0 1px 2px rgba(0,0,0,.15);
-        }
-
-        .gif {
-            width: min(420px, 80vw);
-            border-radius: 20px;
-            box-shadow: 0 12px 30px rgba(0,0,0,.25);
-        }
-
-        /* --- Confetti --- */
-        .confetti-piece {
-            position: fixed;
-            top: -20vh; /* start above the viewport */
-            width: 10px;
-            height: 14px;
-            opacity: 0.95;
-            transform: translateY(-20vh) rotate(0deg);
-            pointer-events: none;
-            z-index: 5;
-            will-change: transform, opacity;
-            animation-name: confettiFall, confettiSpin;
-            animation-timing-function: linear, ease-in-out;
-            animation-iteration-count: 1, infinite; /* fall once, spin continuously while falling */
-            animation-fill-mode: forwards, none;
-        }
-
-        @keyframes confettiFall {
-            to {
-                transform: translateY(115vh) rotate(var(--end-rot, 720deg)) translateX(var(--drift, 0px));
-                opacity: 0;
-            }
-        }
-
-        @keyframes confettiSpin {
-            0% {
-                border-radius: 2px;
+            button.reset {
+                background: #d50000;
+                color: #fff;
             }
 
-            50% {
-                border-radius: 6px;
-            }
-
-            100% {
-                border-radius: 2px;
-            }
+        #reader {
+            margin-top: 40px;
+            font-size: 48px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* optional subtle top haze like “clouds” */
-        .top-haze {
-            position: fixed;
-            inset: -12vh -10vw auto -10vw;
-            height: 24vh;
-            background: radial-gradient(40vw 18vh at 20% 110%, rgba(255,255,255,.28), transparent 60%), radial-gradient(45vw 18vh at 80% 110%, rgba(255,255,255,.24), transparent 60%);
-            filter: blur(6px);
-            z-index: 4;
-            pointer-events: none;
+        .focus {
+            color: #00e5ff;
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="app">
-        <!-- Screen 1: Password -->
-        <h1>Enter the password 💜</h1>
-        <input id="pwd" type="password" placeholder="password" />
-        <div>
-            <button class="btn btn-primary" id="unlock">Unlock 💖</button>
-        </div>
+    <h1>RSVP Speed Reader</h1>
+
+    <textarea id="textInput" placeholder="Paste your text here..."></textarea>
+
+    <div class="controls">
+        <label>
+            WPM:
+            <input type="number" id="wpm" value="300" min="100" max="1000">
+        </label>
+        <button class="start" onclick="start()">Start</button>
+        <button class="pause" onclick="pause()">Pause</button>
+        <button class="reset" onclick="reset()">Reset</button>
     </div>
 
-    <!-- fuzzy “clouds” so confetti looks like it rains from off-screen -->
-    <div class="top-haze" aria-hidden="true"></div>
+    <div id="reader"></div>
 
     <script>
-        // ====== Config you asked for ======
-        const PASSWORD = "ahsanisamazing123456";
-        const GIF_SRC = "sus.gif";     // ensure this file is next to index.html
+        let words = [];
+        let index = 0;
+        let interval = null;
 
-        // ====== Elements & State ======
-        const app = document.getElementById('app');
-        document.getElementById('unlock').addEventListener('click', checkPassword);
-        document.getElementById('pwd').addEventListener('keydown', e => {
-            if (e.key === 'Enter') checkPassword();
-        });
+        function formatWord(word) {
+            const mid = Math.floor(word.length / 2);
+            return word
+                .substring(0, mid) +
+                '<span class="focus">' + word[mid] + '</span>' +
+                word.substring(mid + 1);
+        }
 
-        let yesScale = 1;
-        let noScale = 1;
-        let confettiLaunched = false;
-
-        // ====== Password flow ======
-        function checkPassword() {
-            const input = document.getElementById('pwd').value;
-            if (input === PASSWORD) {
-                showQuestion();
-            } else {
-                // little feedback
-                shake(document.getElementById('pwd'));
+        function showWord() {
+            if (index >= words.length) {
+                clearInterval(interval);
+                return;
             }
+            document.getElementById("reader").innerHTML = formatWord(words[index]);
+            index++;
         }
 
-        function shake(el) {
-            el.style.transition = 'transform 0.08s';
-            el.style.transform = 'translateX(-6px)';
-            setTimeout(() => el.style.transform = 'translateX(6px)', 80);
-            setTimeout(() => el.style.transform = 'translateX(0)', 160);
-        }
+        function start() {
+            if (interval) return;
 
-        // ====== Question screen ======
-        function showQuestion() {
-            app.innerHTML = `
-          <h1>Will you be my valentines? 💖</h1>
-          <div class="tiny">pretty please</div>
-          <div>
-            <button id="yes" class="btn btn-primary">Yes 💘</button>
-            <button id="no"  class="btn btn-secondary">No 💔</button>
-          </div>
-        `;
-
-            document.getElementById('yes').addEventListener('click', yesClicked);
-            document.getElementById('no').addEventListener('click', noClicked);
-        }
-
-        function noClicked() {
-            const yes = document.getElementById('yes');
-            const no = document.getElementById('no');
-
-            yesScale += 0.25;             // grow Yes
-            noScale = Math.max(0.15, noScale - 0.2); // shrink No (limit min)
-
-            yes.style.transform = `scale(${yesScale})`;
-            no.style.transform = `scale(${noScale})`;
-
-            // Position check after the frame paints
-            requestAnimationFrame(() => {
-                const yRect = yes.getBoundingClientRect();
-                const nRect = no.getBoundingClientRect();
-                const overlapping = !(yRect.right < nRect.left ||
-                    yRect.left > nRect.right ||
-                    yRect.bottom < nRect.top ||
-                    yRect.top > nRect.bottom);
-
-                if (overlapping) {
-                    yes.classList.add('glow');
-                    // hide the "no" once covered
-                    no.style.opacity = '0';
-                    no.style.pointerEvents = 'none';
-                    setTimeout(() => no.remove(), 250);
-                }
-            });
-        }
-
-        function yesClicked() {
-            // Clear and show celebration with custom font "love" and your GIF
-            app.innerHTML = `
-          <div class="celebrate">
-            <div class="thanks" aria-live="polite">Thank you</div>
-            <img class="gif" src="${GIF_SRC}" alt="Cute celebration GIF"/>
-          </div>
-        `;
-            // Launch confetti ONCE, raining from off-screen
-            if (!confettiLaunched) {
-                confettiLaunched = true;
-                launchConfettiOnce(220);   // count of pieces
+            if (words.length === 0) {
+                const text = document.getElementById("textInput").value.trim();
+                words = text.split(/\s+/);
+                index = 0;
             }
+
+            const wpm = parseInt(document.getElementById("wpm").value);
+            const delay = 60000 / wpm;
+
+            interval = setInterval(showWord, delay);
         }
 
-        // ====== Confetti (falls once, from above viewport) ======
-        function launchConfettiOnce(count = 200) {
-            const colors = ["#ff69b4", "#ffb6e6", "#b46cff", "#ffd1f2", "#ffffff", "#ff85c6"];
-            for (let i = 0; i < count; i++) {
-                const el = document.createElement('div');
-                el.className = 'confetti-piece';
+        function pause() {
+            clearInterval(interval);
+            interval = null;
+        }
 
-                // size & shape variety
-                const w = 6 + Math.random() * 10;
-                const h = 6 + Math.random() * 14;
-                el.style.width = w + 'px';
-                el.style.height = h + 'px';
-                el.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-                // start X position anywhere across screen, slight random delay
-                const startXvw = Math.random() * 100;
-                el.style.left = startXvw + 'vw';
-
-                // start ABOVE the viewport by 10–45vh so it looks like cloud rain
-                const startYOffsetVh = 10 + Math.random() * 35; // 10-45
-                el.style.top = `-${startYOffsetVh}vh`;
-
-                // drift and end rotation custom properties used by keyframes
-                const drift = (Math.random() - 0.5) * 120; // -60px to 60px
-                const endRot = (Math.random() * 960 + 360) + 'deg'; // spin a lot
-                el.style.setProperty('--drift', drift + 'px');
-                el.style.setProperty('--end-rot', endRot);
-
-                // random duration (3.2–6.2s) and slight stagger
-                const dur = 3.2 + Math.random() * 3;
-                const delay = Math.random() * 0.6;
-                el.style.animationDuration = `${dur}s, ${Math.max(1.2, dur / 3)}s`;
-                el.style.animationDelay = `${delay}s, 0s`;
-
-                document.body.appendChild(el);
-
-                // cleanup after it finishes falling
-                el.addEventListener('animationend', (e) => {
-                    if (e.animationName === 'confettiFall') el.remove();
-                });
-            }
+        function reset() {
+            pause();
+            words = [];
+            index = 0;
+            document.getElementById("reader").innerHTML = "";
         }
     </script>
+
 </body>
 </html>
